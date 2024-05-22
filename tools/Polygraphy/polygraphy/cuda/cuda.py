@@ -17,6 +17,7 @@
 import ctypes
 import os
 import sys
+import site 
 
 from polygraphy import func, mod, util
 from polygraphy.datatype import DataType
@@ -64,11 +65,15 @@ class Cuda:
             cuda_paths += os.environ.get("PATH", "").split(os.path.pathsep)
             lib_pat = "cudart64_*.dll"
         else:
+            site_packages = site.getsitepackages()[0]
+            
             cuda_paths = [
                 *os.environ.get("LD_LIBRARY_PATH", "").split(os.path.pathsep),
                 os.path.join("/", "usr", "local", "cuda", "lib64"),
                 os.path.join("/", "usr", "lib"),
                 os.path.join("/", "lib"),
+                os.path.join(os.getcwd(), "_internal", "nvidia", "cuda_runtime", "lib"),
+                os.path.join(site_packages, "nvidia", "cuda_runtime", "lib")
             ]
             lib_pat = "libcudart.so*"
             fallback_lib = "libcudart.so"
